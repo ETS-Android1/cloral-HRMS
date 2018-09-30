@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DBhandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -16,14 +18,15 @@ public class DBhandler extends SQLiteOpenHelper {
     private static final String COLUMN_PHONE = "phone";
     private static final String COLUMN_POSITION = "position";
     private static final String COLUMN_STATUS = "status";
+    private static final String COLUMN_PHOTO = "photo";
 
-    public DBhandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    DBhandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String query = "CREATE TABLE " + TABLE_CANDIDATES + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " VARCHAR(30), " + COLUMN_PHONE + " NUMBER(10), " + COLUMN_POSITION + " VARCHAR(30), " + COLUMN_STATUS + " VARCHAR(15));";
+        String query = "CREATE TABLE " + TABLE_CANDIDATES + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " VARCHAR(30), " + COLUMN_PHONE + " VARCHAR(10), " + COLUMN_POSITION + " VARCHAR(30), " + COLUMN_STATUS + " VARCHAR(15), " + COLUMN_PHOTO + " VARCHAR(50));";
         sqLiteDatabase.execSQL(query);
     }
 
@@ -40,51 +43,45 @@ public class DBhandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_PHONE, candidate.getPhone());
         contentValues.put(COLUMN_POSITION, candidate.getPosition());
         contentValues.put(COLUMN_STATUS, candidate.getStatus());
+        contentValues.put(COLUMN_PHOTO, candidate.getPhotoURI());
         sqLiteDatabase.insert(TABLE_CANDIDATES, null, contentValues);
         sqLiteDatabase.close();
     }
 
-    public StringBuffer databaseToString() {
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_CANDIDATES + " WHERE " + COLUMN_STATUS + " = 'Selected'";
+    public ArrayList<Candidate> returnCandidates(int number) {
 
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        cursor.moveToFirst();
-        StringBuffer ex = new StringBuffer();
-        while (!cursor.isAfterLast()) {
-            ex.append(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)).toUpperCase());
-            ex.append("\nPhone: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
-            ex.append("\nPosition: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
-            ex.append("\nStatus: ").append(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
-            cursor.moveToNext();
-            ex.append("\n\n");
-        }
-        cursor.close();
-        sqLiteDatabase.close();
-        return ex;
-    }
-
-    public Candidate returnSelectedCandidate() {
-        Candidate candidate = new Candidate();
+        String query = "";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_CANDIDATES + " WHERE " + COLUMN_STATUS + " = 'Selected'";
+        if (number == 0)
+            query = "SELECT * FROM " + TABLE_CANDIDATES + ";";
+        else if (number == 1)
+            query = "SELECT * FROM " + TABLE_CANDIDATES + " WHERE " + COLUMN_STATUS + " = 'Selected'";
+
+        ArrayList<Candidate> candidateArrayList = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
         if (cursor != null) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
+                Candidate candidate = new Candidate();
                 candidate.setId(cursor.getColumnIndex(COLUMN_ID));
                 candidate.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
-                candidate.setPhone(cursor.getColumnIndex(COLUMN_PHONE));
+                candidate.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
                 candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
+                candidateArrayList.add(candidate);
+                cursor.moveToNext();
             }
-            cursor.close();
         }
+        cursor.close();
         sqLiteDatabase.close();
-        return candidate;
+        return candidateArrayList;
     }
 
     public void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.execSQL("DELETE FROM " + TABLE_CANDIDATES);
+        AllApplicationsActivity.candidateAdapter.clear();
+        AllApplicationsActivity.oldListView.setAdapter(null);
     }
 }

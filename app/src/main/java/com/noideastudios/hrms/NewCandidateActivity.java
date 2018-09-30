@@ -72,7 +72,7 @@ public class NewCandidateActivity extends AppCompatActivity {
         } else {
             Candidate candidate = new Candidate(
                     cName.getText().toString(),
-                    Long.parseLong(cPhone.getText().toString()),
+                    cPhone.getText().toString(),
                     cPos.getText().toString(),
                     cStatus.getSelectedItem().toString());
             dBhandler.addCandidate(candidate);

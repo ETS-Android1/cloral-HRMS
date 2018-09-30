@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/photoTile"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/happy" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity=""
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameTile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gothic"
+                android:text="Name"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/phoneTile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gothic"
+                android:text="Phone"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/statusTile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:fontFamily="@font/gothic"
+            android:paddingStart="10dp"
+            android:text="Status"
+            android:textSize="20sp" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewCandidateActivity" />
-        <activity android:name=".OldApplicationsActivity" />
+        <activity android:name=".AllApplicationsActivity" />
         <activity android:name=".SelectedCandidatesActivity"></activity>
     </application>
 

@@ -4,18 +4,28 @@ public class Candidate {
 
     private int id;
     private String name;
-    private long phone;
+    private String phone;
     private String position;
     private String status;
+    private String photoURI;
 
     Candidate() {
     }
 
-    Candidate(String name, long phone, String position, String status) {
+    Candidate(String name, String phone, String position, String status) {
         this.name = name;
         this.phone = phone;
         this.position = position;
         this.status = status;
+        this.photoURI = photoURI;
+    }
+
+    Candidate(String name, String phone, String position, String status, String photoURI) {
+        this.name = name;
+        this.phone = phone;
+        this.position = position;
+        this.status = status;
+        this.photoURI = photoURI;
     }
 
     public int getId() {
@@ -34,11 +44,11 @@ public class Candidate {
         this.name = name;
     }
 
-    public long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -56,5 +66,13 @@ public class Candidate {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPhotoURI() {
+        return photoURI;
+    }
+
+    public void setPhotoURI(String photoURI) {
+        this.photoURI = photoURI;
     }
 }
