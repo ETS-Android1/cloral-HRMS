@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">HRMS</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="statusSpinnner">
+        <item>Selected</item>
+        <item>Rejected</item>
+        <item>In Process</item>
+        <item>Interview</item>
+    </string-array>
 </resources>
