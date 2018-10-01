@@ -9,10 +9,6 @@ import java.util.ArrayList;
 
 public class SelectedCandidatesActivity extends AppCompatActivity {
 
-    public static CandidateAdapter candidateAdapter;
-    public static ListView selectedListView;
-    DBhandler dBhandler;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +23,10 @@ public class SelectedCandidatesActivity extends AppCompatActivity {
     }
 
     private void setUpList() {
-        dBhandler = new DBhandler(this, null, null, 1);
-        selectedListView = findViewById(R.id.selectedCandidateList);
+        DBhandler dBhandler = new DBhandler(this, null, null, 1);
+        ListView selectedListView = findViewById(R.id.selectedCandidateList);
         ArrayList<Candidate> arrayList = dBhandler.returnCandidates(1);
-        candidateAdapter = new CandidateAdapter(this, R.layout.candidate_tile, arrayList);
+        CandidateAdapter candidateAdapter = new CandidateAdapter(this, R.layout.candidate_tile, arrayList);
         selectedListView.setAdapter(candidateAdapter);
     }
 

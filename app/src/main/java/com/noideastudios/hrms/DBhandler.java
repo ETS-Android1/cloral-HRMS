@@ -12,7 +12,7 @@ public class DBhandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "candidates.db";
-    private static final String TABLE_CANDIDATES = "candidates";
+    private static final String TABLE_CANDIDATES = "candidatetable";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PHONE = "phone";
@@ -72,16 +72,15 @@ public class DBhandler extends SQLiteOpenHelper {
                 candidateArrayList.add(candidate);
                 cursor.moveToNext();
             }
+            cursor.close();
         }
-        cursor.close();
+
         sqLiteDatabase.close();
         return candidateArrayList;
     }
 
     public void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        sqLiteDatabase.execSQL("DELETE FROM " + TABLE_CANDIDATES);
-        AllApplicationsActivity.candidateAdapter.clear();
-        AllApplicationsActivity.oldListView.setAdapter(null);
+        sqLiteDatabase.delete(TABLE_CANDIDATES, null, null);
     }
 }
