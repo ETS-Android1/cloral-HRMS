@@ -10,7 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CandidateAdapter extends ArrayAdapter<Candidate> {
 
@@ -22,11 +26,14 @@ public class CandidateAdapter extends ArrayAdapter<Candidate> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null)
-            convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.candidate_tile, parent, false);
+            convertView = ((Activity) getContext()).
+                    getLayoutInflater().inflate(R.layout.candidate_tile, parent, false);
 
         TextView name = convertView.findViewById(R.id.nameTile);
         TextView phone = convertView.findViewById(R.id.phoneTile);
         TextView status = convertView.findViewById(R.id.statusTile);
+        TextView pos = convertView.findViewById(R.id.posTile);
+        CircleImageView userImage = convertView.findViewById(R.id.photoTile);
         LinearLayout tile = convertView.findViewById(R.id.tile);
 
         Candidate candidate = getItem(position);
@@ -35,6 +42,16 @@ public class CandidateAdapter extends ArrayAdapter<Candidate> {
             name.setText(candidate.getName());
             phone.setText(candidate.getPhone());
             status.setText(candidate.getStatus());
+            pos.setText(candidate.getPosition());
+            if (candidate.getPhotoURI() == null)
+                Picasso.with(getContext())
+                        .load(R.drawable.employee_tie)
+                        .into(userImage);
+            else
+                Picasso.with(getContext())
+                        .load(candidate.getPhotoURI())
+                        .error(R.drawable.employee_tie)
+                        .into(userImage);
             tile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

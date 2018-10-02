@@ -31,8 +31,53 @@
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:elevation">@dimen/cardDimens</item>
-        <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
+        <item name="android:elevation">@dimen/fifteen</item>
+        <item name="cardCornerRadius">@dimen/five</item>
     </style>
 
+    <style name="fillButtons">
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:elevation">@dimen/fifteen</item>
+        <item name="android:fontFamily">@font/gothicb</item>
+        <item name="android:textColor">@color/defaultTextColor</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
+    </style>
+
+    <style name="whiteButtons">
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:elevation">@dimen/fifteen</item>
+        <item name="android:fontFamily">@font/gothicb</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:backgroundTint">@android:color/white</item>
+    </style>
+
+    <style name="radioButtons">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/gothic</item>
+        <item name="android:layout_marginTop">@dimen/fifteen</item>
+        <item name="android:paddingStart">@dimen/five</item>
+    </style>
+
+    <style name="TIL">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/fifteen</item>
+    </style>
+
+    <style name="TIET">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fontFamily">@font/gothic</item>
+        <item name="android:inputType">textCapSentences</item>
+        <item name="android:maxLength">20</item>
+    </style>
 </resources>

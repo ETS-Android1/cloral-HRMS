@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/fifteen"
+    android:orientation="vertical"
     tools:context=".AllApplicationsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="@dimen/ten"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/delete"
+            style="@style/fillButtons"
+            android:layout_marginEnd="@dimen/ten"
+            android:text="Delete All" />
+
+        <Button
+            android:id="@+id/sortbybutton"
+            style="@style/whiteButtons"
+            android:text="Sort By▼" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/oldCandidateList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
         tools:listitem="@layout/candidate_tile" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

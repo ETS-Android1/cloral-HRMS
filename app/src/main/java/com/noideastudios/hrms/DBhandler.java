@@ -26,7 +26,14 @@ public class DBhandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String query = "CREATE TABLE " + TABLE_CANDIDATES + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " VARCHAR(30), " + COLUMN_PHONE + " VARCHAR(10), " + COLUMN_POSITION + " VARCHAR(30), " + COLUMN_STATUS + " VARCHAR(15), " + COLUMN_PHOTO + " VARCHAR(50));";
+        String query =
+                "CREATE TABLE " + TABLE_CANDIDATES + " ("
+                        + COLUMN_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + COLUMN_NAME + " VARCHAR(30), "
+                        + COLUMN_PHONE + " VARCHAR(10), "
+                        + COLUMN_POSITION + " VARCHAR(30), "
+                        + COLUMN_STATUS + " VARCHAR(15), "
+                        + COLUMN_PHOTO + " VARCHAR(50));";
         sqLiteDatabase.execSQL(query);
     }
 
@@ -52,10 +59,38 @@ public class DBhandler extends SQLiteOpenHelper {
 
         String query = "";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        if (number == 0)
-            query = "SELECT * FROM " + TABLE_CANDIDATES + ";";
-        else if (number == 1)
-            query = "SELECT * FROM " + TABLE_CANDIDATES + " WHERE " + COLUMN_STATUS + " = 'Selected'";
+
+        switch (number) {
+            case 0:
+                query = "SELECT * FROM " + TABLE_CANDIDATES + ";";
+                break;
+            case 1:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " WHERE " + COLUMN_STATUS + " = 'Selected'";
+                break;
+            case 100:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " ORDER BY " + COLUMN_STATUS + ";";
+                break;
+            case 200:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " ORDER BY " + COLUMN_NAME + ";";
+                break;
+            case 201:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " WHERE " + COLUMN_STATUS + " = 'Selected' "
+                        + " ORDER BY " + COLUMN_NAME + ";";
+                break;
+            case 300:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " ORDER BY " + COLUMN_POSITION + ";";
+                break;
+            case 301:
+                query = "SELECT * FROM " + TABLE_CANDIDATES
+                        + " WHERE " + COLUMN_STATUS + " = 'Selected' "
+                        + " ORDER BY " + COLUMN_POSITION + ";";
+                break;
+        }
 
         ArrayList<Candidate> candidateArrayList = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
@@ -68,6 +103,7 @@ public class DBhandler extends SQLiteOpenHelper {
                 candidate.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
                 candidate.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
                 candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                candidate.setPosition(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
                 candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
                 candidateArrayList.add(candidate);
                 cursor.moveToNext();

@@ -13,4 +13,6 @@
     <color name="redDark">#D4415E</color>
     <color name="blueDark">#0DAFCC</color>
 
+    <color name="defaultTextColor">#8A000000</color>
+
 </resources>
