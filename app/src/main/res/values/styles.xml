@@ -73,11 +73,50 @@
         <item name="android:layout_marginBottom">@dimen/fifteen</item>
     </style>
 
+    <style name="ErrorYellow" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/yellowDark</item>
+    </style>
+
+    <style name="ErrorRed" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/redDark</item>
+    </style>
+
+    <style name="ErrorBlue" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/blueDark</item>
+    </style>
+
     <style name="TIET">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:fontFamily">@font/gothic</item>
         <item name="android:inputType">textCapSentences</item>
         <item name="android:maxLength">20</item>
+    </style>
+
+    <style name="tableParam">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">#f0f0f0</item>
+        <item name="android:fontFamily">@font/gothicb</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="tableValue">
+        <item name="android:inputType">textCapSentences</item>
+        <item name="android:text">Value</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/defaultTextColor</item>
+        <item name="android:background">@color/defaultBGColor</item>
+        <item name="android:fontFamily">@font/gothic</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:clickable">false</item>
     </style>
 </resources>

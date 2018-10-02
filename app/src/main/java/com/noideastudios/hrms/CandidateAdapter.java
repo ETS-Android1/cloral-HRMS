@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -18,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CandidateAdapter extends ArrayAdapter<Candidate> {
 
-    public CandidateAdapter(@NonNull Context context, int resource, ArrayList<Candidate> objects) {
+    CandidateAdapter(@NonNull Context context, int resource, ArrayList<Candidate> objects) {
         super(context, resource, objects);
     }
 
@@ -34,7 +33,6 @@ public class CandidateAdapter extends ArrayAdapter<Candidate> {
         TextView status = convertView.findViewById(R.id.statusTile);
         TextView pos = convertView.findViewById(R.id.posTile);
         CircleImageView userImage = convertView.findViewById(R.id.photoTile);
-        LinearLayout tile = convertView.findViewById(R.id.tile);
 
         Candidate candidate = getItem(position);
 
@@ -52,12 +50,6 @@ public class CandidateAdapter extends ArrayAdapter<Candidate> {
                         .load(candidate.getPhotoURI())
                         .error(R.drawable.employee_tie)
                         .into(userImage);
-            tile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
         }
         return convertView;
     }

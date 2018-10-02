@@ -1,6 +1,8 @@
 package com.noideastudios.hrms;
 
-public class Candidate {
+import java.io.Serializable;
+
+public class Candidate implements Serializable {
 
     private int id;
     private String name;
@@ -10,14 +12,6 @@ public class Candidate {
     private String photoURI;
 
     Candidate() {
-    }
-
-    Candidate(String name, String phone, String position, String status) {
-        this.name = name;
-        this.phone = phone;
-        this.position = position;
-        this.status = status;
-        this.photoURI = photoURI;
     }
 
     Candidate(String name, String phone, String position, String status, String photoURI) {

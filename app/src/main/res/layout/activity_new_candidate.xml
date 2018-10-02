@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,12 +22,12 @@
                 android:id="@+id/proceed"
                 style="@style/fillButtons"
                 android:layout_marginEnd="@dimen/ten"
-                android:text="Proceed" />
+                android:text="@string/proceed" />
 
             <Button
                 android:id="@+id/clear"
                 style="@style/whiteButtons"
-                android:text="clear fields" />
+                android:text="@string/clear_fields" />
 
         </LinearLayout>
 
@@ -42,7 +43,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.5"
                 android:fontFamily="@font/gothic"
-                android:text="Tap on image to pick new:"
+                android:text="@string/edit_image"
                 android:textSize="18sp" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -57,7 +58,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/nameTIL"
             style="@style/TIL"
-            android:hint="Enter Candidate Name">
+            android:hint="@string/enter_candidate_name"
+            app:errorTextAppearance="@style/ErrorYellow">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
@@ -67,7 +69,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/phoneTIL"
             style="@style/TIL"
-            android:hint="Enter Candidate Phone Number">
+            android:hint="@string/enter_candidate_phone_number"
+            app:errorTextAppearance="@style/ErrorRed">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/phone"
@@ -79,7 +82,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/posTIL"
             style="@style/TIL"
-            android:hint="Enter Preferable Position">
+            android:hint="@string/enter_preferable_position"
+            app:errorTextAppearance="@style/ErrorBlue">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/position"
@@ -91,13 +95,14 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/five"
             android:layout_marginTop="@dimen/fifteen"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/twenty">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gothic"
-                android:text="Choose Status: "
+                android:text="@string/choose_status"
                 android:textSize="18sp" />
 
             <Spinner

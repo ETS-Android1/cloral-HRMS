@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.com.vansuita.pickimage.provider"
@@ -34,9 +35,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
+
         <activity android:name=".NewCandidateActivity" />
         <activity android:name=".AllApplicationsActivity" />
-        <activity android:name=".SelectedCandidatesActivity"></activity>
+        <activity android:name=".SelectedCandidatesActivity" />
+        <activity android:name=".CandidateDetailsActivity" />
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,25 @@ public class DBhandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
+    public Candidate returnCandidate(int employee_id) {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_CANDIDATES
+                + " WHERE " + COLUMN_ID + " = " + employee_id;
+
+        Candidate candidate = new Candidate();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            candidate.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+            candidate.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
+            candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+            candidate.setPosition(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
+            candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
+            cursor.close();
+        }
+        return candidate;
+    }
+
     public ArrayList<Candidate> returnCandidates(int number) {
 
         String query = "";
@@ -99,7 +119,7 @@ public class DBhandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 Candidate candidate = new Candidate();
-                candidate.setId(cursor.getColumnIndex(COLUMN_ID));
+                candidate.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 candidate.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
                 candidate.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
                 candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
@@ -115,6 +135,17 @@ public class DBhandler extends SQLiteOpenHelper {
         return candidateArrayList;
     }
 
+    public void updateCandidate(int id, String name, String phone, String position, String status, Uri uri) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = "UPDATE " + TABLE_CANDIDATES + " SET "
+                + COLUMN_NAME + " = '" + name + "', "
+                + COLUMN_PHONE + " = '" + phone + "', "
+                + COLUMN_POSITION + " = '" + position + "', "
+                + COLUMN_STATUS + " = '" + status + "', "
+                + COLUMN_PHOTO + " = '" + uri + "'"
+                + " WHERE " + COLUMN_ID + " = " + id;
+        sqLiteDatabase.execSQL(query);
+    }
     public void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.delete(TABLE_CANDIDATES, null, null);

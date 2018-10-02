@@ -1,5 +1,6 @@
 package com.noideastudios.hrms;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -14,8 +16,9 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class SelectedCandidatesActivity extends AppCompatActivity {
+public class SelectedCandidatesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     DBhandler dBhandler;
     Button sortBy;
@@ -45,6 +48,7 @@ public class SelectedCandidatesActivity extends AppCompatActivity {
         candidateAdapter = new CandidateAdapter(
                 this, R.layout.candidate_tile, arrayList);
         selectedListView.setAdapter(candidateAdapter);
+        selectedListView.setOnItemClickListener(this);
 
         sortBy = findViewById(R.id.sortbySelectedbutton);
         sortBy.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +66,7 @@ public class SelectedCandidatesActivity extends AppCompatActivity {
         builder.setView(sortDialog);
 
         final AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         radioGroup = sortDialog.findViewById(R.id.sortByRG);
@@ -97,10 +101,22 @@ public class SelectedCandidatesActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Intent intent = new Intent(SelectedCandidatesActivity.this, CandidateDetailsActivity.class);
+        intent.putExtra("employee_id", arrayList.get(position).getId());
+        startActivity(intent);
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpList();
     }
 }

@@ -1,5 +1,6 @@
 package com.noideastudios.hrms;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -14,8 +16,9 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class AllApplicationsActivity extends AppCompatActivity {
+public class AllApplicationsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     DBhandler dBhandler;
     Button sortBy;
@@ -45,6 +48,7 @@ public class AllApplicationsActivity extends AppCompatActivity {
         candidateAdapter = new CandidateAdapter(
                 AllApplicationsActivity.this, R.layout.candidate_tile, arrayList);
         oldListView.setAdapter(candidateAdapter);
+        oldListView.setOnItemClickListener(this);
 
         Button delete = findViewById(R.id.delete);
         delete.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +75,7 @@ public class AllApplicationsActivity extends AppCompatActivity {
         builder.setView(sortDialog);
 
         final AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         radioGroup = sortDialog.findViewById(R.id.sortByRG);
@@ -113,5 +117,18 @@ public class AllApplicationsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Intent intent = new Intent(AllApplicationsActivity.this, CandidateDetailsActivity.class);
+        intent.putExtra("employee_id", arrayList.get(position).getId());
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpView();
     }
 }

@@ -14,5 +14,6 @@
     <color name="blueDark">#0DAFCC</color>
 
     <color name="defaultTextColor">#8A000000</color>
+    <color name="defaultBGColor">#FAFAFA</color>
 
 </resources>
