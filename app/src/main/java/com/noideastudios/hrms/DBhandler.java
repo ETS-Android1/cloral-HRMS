@@ -20,6 +20,7 @@ public class DBhandler extends SQLiteOpenHelper {
     private static final String COLUMN_POSITION = "position";
     private static final String COLUMN_STATUS = "status";
     private static final String COLUMN_PHOTO = "photo";
+    private static final String COLUMN_RESUME = "resume";
 
     DBhandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -29,12 +30,13 @@ public class DBhandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String query =
                 "CREATE TABLE " + TABLE_CANDIDATES + " ("
-                        + COLUMN_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + COLUMN_NAME + " VARCHAR(30), "
                         + COLUMN_PHONE + " VARCHAR(10), "
                         + COLUMN_POSITION + " VARCHAR(30), "
                         + COLUMN_STATUS + " VARCHAR(15), "
-                        + COLUMN_PHOTO + " VARCHAR(50));";
+                        + COLUMN_PHOTO + " VARCHAR(50), "
+                        + COLUMN_RESUME + " VARCHAR(50));";
         sqLiteDatabase.execSQL(query);
     }
 
@@ -52,6 +54,7 @@ public class DBhandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_POSITION, candidate.getPosition());
         contentValues.put(COLUMN_STATUS, candidate.getStatus());
         contentValues.put(COLUMN_PHOTO, candidate.getPhotoURI());
+        contentValues.put(COLUMN_RESUME, candidate.getResumeURI());
         sqLiteDatabase.insert(TABLE_CANDIDATES, null, contentValues);
         sqLiteDatabase.close();
     }
@@ -70,6 +73,7 @@ public class DBhandler extends SQLiteOpenHelper {
             candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
             candidate.setPosition(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
             candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
+            candidate.setResumeURI(cursor.getString(cursor.getColumnIndex(COLUMN_RESUME)));
             cursor.close();
         }
         return candidate;
@@ -125,6 +129,7 @@ public class DBhandler extends SQLiteOpenHelper {
                 candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
                 candidate.setPosition(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
                 candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
+                candidate.setResumeURI(cursor.getString(cursor.getColumnIndex(COLUMN_RESUME)));
                 candidateArrayList.add(candidate);
                 cursor.moveToNext();
             }
@@ -146,6 +151,7 @@ public class DBhandler extends SQLiteOpenHelper {
                 + " WHERE " + COLUMN_ID + " = " + id;
         sqLiteDatabase.execSQL(query);
     }
+
     public void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.delete(TABLE_CANDIDATES, null, null);

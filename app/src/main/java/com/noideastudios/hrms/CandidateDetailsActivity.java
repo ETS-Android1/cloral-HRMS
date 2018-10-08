@@ -1,9 +1,11 @@
 package com.noideastudios.hrms;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
@@ -21,6 +23,8 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickCancel;
 import com.vansuita.pickimage.listeners.IPickResult;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,12 +71,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         Status = findViewById(R.id.statusDetail);
         imageView = findViewById(R.id.imageDetail);
         Resume = findViewById(R.id.resumeDetail);
-        Resume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openResume();
-            }
-        });
+        openResume();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_item,
                 getResources().getStringArray(R.array.statusSpinnner));
@@ -186,7 +185,33 @@ public class CandidateDetailsActivity extends AppCompatActivity {
     }
 
     private void openResume() {
+        String resumeUri = candidate.getResumeURI();
+        if (resumeUri != null) {
+            File file = new File(resumeUri);
+            String displayName = null;
 
+            if (resumeUri.startsWith("content://")) {
+                try (Cursor cursor = CandidateDetailsActivity.this.getContentResolver()
+                        .query(Uri.parse(candidate.getResumeURI()),
+                                null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst())
+                        displayName = cursor
+                                .getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } else if (resumeUri.startsWith("file://")) {
+                displayName = file.getName();
+            }
+            Resume.setText(displayName);
+            Resume.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(candidate.getResumeURI()), "application/pdf");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivityForResult(intent, 200);
+                }
+            });
+        }
     }
 
     @Override

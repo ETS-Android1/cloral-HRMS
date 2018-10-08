@@ -14,7 +14,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/fifty"
             android:layout_marginBottom="@dimen/ten"
             android:orientation="horizontal">
 
@@ -96,7 +96,7 @@
             android:layout_margin="@dimen/five"
             android:layout_marginTop="@dimen/fifteen"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/twenty">
+            android:paddingBottom="@dimen/fifteen">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,6 +111,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/twenty" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/uploadResume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/five"
+            android:layout_marginBottom="@dimen/fifty"
+            android:fontFamily="@font/gothic"
+            android:paddingBottom="@dimen/twenty"
+            android:text="@string/upload_resume"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
 </ScrollView>

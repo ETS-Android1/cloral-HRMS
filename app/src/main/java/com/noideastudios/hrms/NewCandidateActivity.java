@@ -1,8 +1,11 @@
 package com.noideastudios.hrms;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +27,8 @@ import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickCancel;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.File;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.noideastudios.hrms.Functions.BitmapToUri;
@@ -31,12 +37,14 @@ import static com.noideastudios.hrms.Functions.getResizedBitmap;
 public class NewCandidateActivity extends AppCompatActivity {
 
     DBhandler dBhandler;
+    TextView resume;
     TextInputLayout nameTIL, phoneTIL, posTIL;
     TextInputEditText cName, cPhone, cPos;
     Spinner cStatus;
     Button proceed, clear;
     CircleImageView userImage;
-    Uri uri;
+    Uri photoUri, resumeUri;
+    String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +75,20 @@ public class NewCandidateActivity extends AppCompatActivity {
         nameTIL = findViewById(R.id.nameTIL);
         phoneTIL = findViewById(R.id.phoneTIL);
         posTIL = findViewById(R.id.posTIL);
+        resume = findViewById(R.id.uploadResume);
 
         userImage = findViewById(R.id.photoInput);
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uri = uploadPic();
+                photoUri = uploadPic();
+            }
+        });
+
+        resume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadResume();
             }
         });
 
@@ -158,11 +174,11 @@ public class NewCandidateActivity extends AppCompatActivity {
                             cPhone.getText().toString(),
                             cPos.getText().toString(),
                             cStatus.getSelectedItem().toString(),
-                            String.valueOf(uri));
+                            String.valueOf(photoUri),
+                            String.valueOf(resumeUri));
                     dBhandler.addCandidate(candidate);
                     Toast.makeText(NewCandidateActivity.this,
                             cName.getText().toString() + " added!", Toast.LENGTH_LONG).show();
-                    //cName.setError(null);
                     resetFields();
                 }
             }
@@ -179,6 +195,10 @@ public class NewCandidateActivity extends AppCompatActivity {
         cName.setText("");
         cPhone.setText("");
         cPos.setText("");
+        resume.setText(R.string.upload_resume);
+        Picasso.with(this)
+                .load(R.drawable.employee_tie)
+                .into(userImage);
     }
 
     private Uri uploadPic() {
@@ -191,9 +211,9 @@ public class NewCandidateActivity extends AppCompatActivity {
                     @Override
                     public void onPickResult(PickResult r) {
                         Bitmap compressed = getResizedBitmap(r.getBitmap(), 1000);
-                        uri = BitmapToUri(NewCandidateActivity.this, compressed);
+                        photoUri = BitmapToUri(NewCandidateActivity.this, compressed);
                         Picasso.with(NewCandidateActivity.this)
-                                .load(uri)
+                                .load(photoUri)
                                 .error(R.drawable.happy)
                                 .into(userImage);
                     }
@@ -205,7 +225,43 @@ public class NewCandidateActivity extends AppCompatActivity {
                                 "Cancelled", Toast.LENGTH_SHORT).show();
                     }
                 }).show(NewCandidateActivity.this);
-        return uri;
+        return photoUri;
+    }
+
+    private void uploadResume() {
+        final Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("application/pdf");
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            resumeUri = data.getData();
+            String uriString = resumeUri.toString();
+            File file = new File(uriString);
+            path = file.getAbsolutePath();
+            String displayName = null;
+
+            if (uriString.startsWith("content://")) {
+                Cursor cursor = null;
+                try {
+                    cursor = NewCandidateActivity.this.getContentResolver()
+                            .query(resumeUri,
+                                    null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst())
+                        displayName = "Selected pdf file is: " + cursor
+                                .getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                } finally {
+                    cursor.close();
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = "Selected pdf file is: " + file.getName();
+            }
+            resume.setText(displayName);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

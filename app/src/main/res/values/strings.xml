@@ -19,6 +19,8 @@
     <string name="enter_candidate_phone_number">Enter Candidate Phone Number</string>
     <string name="enter_preferable_position">Enter Preferable Position</string>
     <string name="choose_status">Choose Status:</string>
+    <string name="upload_resume">Click here to upload resume...</string>
+    <string name="no_resume_uploaded">No Resume Uploaded</string>
 
     <string-array name="statusSpinnner">
         <item>Selected</item>

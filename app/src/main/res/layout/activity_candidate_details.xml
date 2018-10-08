@@ -111,6 +111,8 @@
                     android:text="@string/resume" />
 
                 <TextView
+                    android:text="@string/no_resume_uploaded"
+                    android:textSize="15sp"
                     android:id="@+id/resumeDetail"
                     style="@style/tableValue" />
             </LinearLayout>

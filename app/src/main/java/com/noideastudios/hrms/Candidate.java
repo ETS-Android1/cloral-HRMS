@@ -10,16 +10,18 @@ public class Candidate implements Serializable {
     private String position;
     private String status;
     private String photoURI;
+    private String resumeURI;
 
     Candidate() {
     }
 
-    Candidate(String name, String phone, String position, String status, String photoURI) {
+    Candidate(String name, String phone, String position, String status, String photoURI, String resumeURI) {
         this.name = name;
         this.phone = phone;
         this.position = position;
         this.status = status;
         this.photoURI = photoURI;
+        this.resumeURI = resumeURI;
     }
 
     public int getId() {
@@ -68,5 +70,13 @@ public class Candidate implements Serializable {
 
     public void setPhotoURI(String photoURI) {
         this.photoURI = photoURI;
+    }
+
+    public String getResumeURI() {
+        return resumeURI;
+    }
+
+    public void setResumeURI(String resumeURI) {
+        this.resumeURI = resumeURI;
     }
 }
