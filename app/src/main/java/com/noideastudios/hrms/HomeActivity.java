@@ -90,9 +90,10 @@ public class HomeActivity extends AppCompatActivity {
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(Arrays.asList(
                                             new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                            new AuthUI.IdpConfig.EmailBuilder().build(),
                                             new AuthUI.IdpConfig.PhoneBuilder().build()
                                     ))
+                                    .setLogo(R.mipmap.cloral_logo)
+                                    .setIsSmartLockEnabled(true)
                                     .build(),
                             RC_SIGN_IN);
                 }

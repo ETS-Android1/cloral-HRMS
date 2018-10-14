@@ -118,4 +118,11 @@
         <item name="android:textSize">18sp</item>
         <item name="android:clickable">false</item>
     </style>
+
+    <style name="FirebaseUI.AuthMethodPicker.Logo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">300dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">5dp</item>
+    </style>
 </resources>
