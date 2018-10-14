@@ -139,14 +139,15 @@ public class DBhandler extends SQLiteOpenHelper {
         return candidateArrayList;
     }
 
-    public void updateCandidate(int id, String name, String phone, String position, String status, String photoURI) {
+    public void updateCandidate(int id, String name, String phone, String position, String status, String photoURI, String resumeUri) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = "UPDATE " + TABLE_CANDIDATES + " SET "
                 + COLUMN_NAME + " = '" + name + "', "
                 + COLUMN_PHONE + " = '" + phone + "', "
                 + COLUMN_POSITION + " = '" + position + "', "
                 + COLUMN_STATUS + " = '" + status + "', "
-                + COLUMN_PHOTO + " = '" + photoURI + "'"
+                + COLUMN_PHOTO + " = '" + photoURI + "',"
+                + COLUMN_RESUME + " = '" + resumeUri + "'"
                 + " WHERE " + COLUMN_ID + " = " + id;
         sqLiteDatabase.execSQL(query);
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HRMS</string>
+    <string name="app_name">Cloral HR Management System</string>
     <string name="action_logout">Logout</string>
 
     <string name="save_details">Save Details</string>

@@ -22,8 +22,6 @@ import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickCancel;
 import com.vansuita.pickimage.listeners.IPickResult;
 
-import java.io.File;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.noideastudios.hrms.Functions.BitmapToUri;
@@ -36,10 +34,10 @@ public class CandidateDetailsActivity extends AppCompatActivity {
     Button save, reset;
     int id;
     CircleImageView imageView;
-    TextView Name, Phone, Position, Resume;
+    TextView Name, Phone, Position, Resume, Change;
     Spinner Status;
-    String name, phone, position, status, uri;
-    Uri photoURI;
+    String name, phone, position, status, P_uri, R_uri;
+    Uri photoURI, resumeUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +62,13 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         Status = findViewById(R.id.statusDetail);
         imageView = findViewById(R.id.imageDetail);
         Resume = findViewById(R.id.resumeDetail);
+        Change = findViewById(R.id.change);
         setView();
         setUpEdit();
     }
 
     private void setView() {
-
         candidate = dBhandler.returnCandidate(id);
-        openResume();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_item,
                 getResources().getStringArray(R.array.statusSpinnner));
@@ -99,7 +96,16 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 .load(candidate.getPhotoURI())
                 .error(R.drawable.employee_tie)
                 .into(imageView);
-        uri = candidate.getPhotoURI();
+        if (candidate.getResumeURI().length() > 0) {
+            Resume.setEnabled(true);
+            Resume.setText("View");
+            R_uri = candidate.getResumeURI();
+        } else {
+            Resume.setEnabled(false);
+            Resume.setText("N/A");
+            R_uri = null;
+        }
+        openResume();
     }
 
     public void setUpEdit() {
@@ -131,13 +137,13 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 Phone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
             }
         });
+        changeResume();
         Position.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Position.setEnabled(true);
             }
         });
-
 
         save = findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
@@ -147,8 +153,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 phone = Phone.getText().toString();
                 position = Position.getText().toString();
                 status = Status.getSelectedItem().toString();
-                uri = String.valueOf(photoURI);
-                dBhandler.updateCandidate(id, name, phone, position, status, uri);
+                dBhandler.updateCandidate(id, name, phone, position, status, String.valueOf(photoURI), R_uri);
                 Toast.makeText(CandidateDetailsActivity.this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
 
                 setView();
@@ -186,11 +191,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
 
     private void openResume() {
         String resumeUri = candidate.getResumeURI();
-        String displayName = "N/A";
-        if (resumeUri == null) {
-            File file = new File(resumeUri);
-            displayName = "View";
-            Resume.setText(displayName);
+        if (resumeUri.length() > 0) {
             Resume.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -201,6 +202,30 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void changeResume() {
+        Change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("application/pdf");
+                startActivityForResult(intent, 100);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            resumeUri = data.getData();
+            if (resumeUri != null) {
+                R_uri = resumeUri.toString();
+                Change.setText("Uploaded");
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
