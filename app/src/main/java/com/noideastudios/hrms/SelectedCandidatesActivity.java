@@ -21,7 +21,7 @@ import java.util.Objects;
 public class SelectedCandidatesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     DBhandler dBhandler;
-    Button sortBy;
+    Button sortBy, deleteS;
     RadioGroup radioGroup;
     RadioButton radioButton;
     ListView selectedListView;
@@ -55,6 +55,15 @@ public class SelectedCandidatesActivity extends AppCompatActivity implements Ada
             @Override
             public void onClick(View view) {
                 setUpSortBy();
+            }
+        });
+
+        deleteS = findViewById(R.id.deleteS);
+        deleteS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dBhandler.deleteSelected();
+                candidateAdapter.clear();
             }
         });
     }

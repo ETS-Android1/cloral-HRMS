@@ -108,13 +108,22 @@
 
                 <TextView
                     style="@style/tableParam"
+                    android:layout_weight="1"
                     android:text="@string/resume" />
 
                 <TextView
-                    android:text="@string/no_resume_uploaded"
-                    android:textSize="15sp"
                     android:id="@+id/resumeDetail"
-                    style="@style/tableValue" />
+                    style="@style/tableValue"
+                    android:layout_weight="1"
+                    android:text="@string/view"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/change"
+                    style="@style/tableValue"
+                    android:layout_weight="1"
+                    android:text="@string/upload"
+                    android:textSize="15sp" />
             </LinearLayout>
 
         </LinearLayout>

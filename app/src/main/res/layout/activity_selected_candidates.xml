@@ -14,10 +14,10 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/report"
+            android:id="@+id/deleteS"
             style="@style/fillButtons"
             android:layout_marginEnd="@dimen/ten"
-            android:text="Generate Report" />
+            android:text="Delete these" />
 
         <Button
             android:id="@+id/sortbySelectedbutton"

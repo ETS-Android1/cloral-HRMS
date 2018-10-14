@@ -1,11 +1,9 @@
 package com.noideastudios.hrms;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
@@ -37,11 +35,11 @@ public class CandidateDetailsActivity extends AppCompatActivity {
     Candidate candidate;
     Button save, reset;
     int id;
-    Uri uri;
     CircleImageView imageView;
     TextView Name, Phone, Position, Resume;
     Spinner Status;
-    String name, phone, position, status, photoURI;
+    String name, phone, position, status, uri;
+    Uri photoURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +57,20 @@ public class CandidateDetailsActivity extends AppCompatActivity {
             id = intent.getIntExtra("employee_id", 0);
 
         dBhandler = new DBhandler(this, null, null, 1);
-        candidate = dBhandler.returnCandidate(id);
-        setView();
-        setUpEdit();
-    }
 
-    private void setView() {
         Name = findViewById(R.id.nameDetail);
         Phone = findViewById(R.id.phoneDetail);
         Position = findViewById(R.id.positionDetail);
         Status = findViewById(R.id.statusDetail);
         imageView = findViewById(R.id.imageDetail);
         Resume = findViewById(R.id.resumeDetail);
+        setView();
+        setUpEdit();
+    }
+
+    private void setView() {
+
+        candidate = dBhandler.returnCandidate(id);
         openResume();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_item,
@@ -99,6 +99,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 .load(candidate.getPhotoURI())
                 .error(R.drawable.employee_tie)
                 .into(imageView);
+        uri = candidate.getPhotoURI();
     }
 
     public void setUpEdit() {
@@ -113,7 +114,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uri = uploadPic();
+                photoURI = uploadPic();
             }
         });
         Name.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +138,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
             }
         });
 
+
         save = findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,13 +147,11 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                 phone = Phone.getText().toString();
                 position = Position.getText().toString();
                 status = Status.getSelectedItem().toString();
-                photoURI = String.valueOf(uri);
+                uri = String.valueOf(photoURI);
                 dBhandler.updateCandidate(id, name, phone, position, status, uri);
                 Toast.makeText(CandidateDetailsActivity.this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
-                Name.setEnabled(false);
-                Phone.setEnabled(false);
-                Position.setEnabled(false);
-                Status.setEnabled(false);
+
+                setView();
             }
         });
 
@@ -167,10 +167,10 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onPickResult(PickResult r) {
                         Bitmap compressed = getResizedBitmap(r.getBitmap(), 1000);
-                        uri = BitmapToUri(CandidateDetailsActivity.this, compressed);
+                        photoURI = BitmapToUri(CandidateDetailsActivity.this, compressed);
                         Picasso.with(CandidateDetailsActivity.this)
-                                .load(uri)
-                                .error(R.drawable.happy)
+                                .load(photoURI)
+                                .error(R.drawable.employee_tie)
                                 .into(imageView);
                     }
                 })
@@ -181,26 +181,15 @@ public class CandidateDetailsActivity extends AppCompatActivity {
                                 "Cancelled", Toast.LENGTH_SHORT).show();
                     }
                 }).show(CandidateDetailsActivity.this);
-        return uri;
+        return photoURI;
     }
 
     private void openResume() {
         String resumeUri = candidate.getResumeURI();
-        if (resumeUri != null) {
+        String displayName = "N/A";
+        if (resumeUri == null) {
             File file = new File(resumeUri);
-            String displayName = null;
-
-            if (resumeUri.startsWith("content://")) {
-                try (Cursor cursor = CandidateDetailsActivity.this.getContentResolver()
-                        .query(Uri.parse(candidate.getResumeURI()),
-                                null, null, null, null)) {
-                    if (cursor != null && cursor.moveToFirst())
-                        displayName = cursor
-                                .getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } else if (resumeUri.startsWith("file://")) {
-                displayName = file.getName();
-            }
+            displayName = "View";
             Resume.setText(displayName);
             Resume.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -44,7 +44,7 @@ public class NewCandidateActivity extends AppCompatActivity {
     Button proceed, clear;
     CircleImageView userImage;
     Uri photoUri, resumeUri;
-    String path;
+    String path, uriString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +85,7 @@ public class NewCandidateActivity extends AppCompatActivity {
             }
         });
 
+        uriString = "";
         resume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,7 +176,7 @@ public class NewCandidateActivity extends AppCompatActivity {
                             cPos.getText().toString(),
                             cStatus.getSelectedItem().toString(),
                             String.valueOf(photoUri),
-                            String.valueOf(resumeUri));
+                            uriString);
                     dBhandler.addCandidate(candidate);
                     Toast.makeText(NewCandidateActivity.this,
                             cName.getText().toString() + " added!", Toast.LENGTH_LONG).show();
@@ -196,6 +197,7 @@ public class NewCandidateActivity extends AppCompatActivity {
         cPhone.setText("");
         cPos.setText("");
         resume.setText(R.string.upload_resume);
+        uriString = "";
         Picasso.with(this)
                 .load(R.drawable.employee_tie)
                 .into(userImage);
@@ -214,7 +216,7 @@ public class NewCandidateActivity extends AppCompatActivity {
                         photoUri = BitmapToUri(NewCandidateActivity.this, compressed);
                         Picasso.with(NewCandidateActivity.this)
                                 .load(photoUri)
-                                .error(R.drawable.happy)
+                                .error(R.drawable.employee_tie)
                                 .into(userImage);
                     }
                 })
@@ -239,22 +241,20 @@ public class NewCandidateActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 100 && resultCode == RESULT_OK) {
             resumeUri = data.getData();
-            String uriString = resumeUri.toString();
+            if (resumeUri != null) {
+                uriString = resumeUri.toString();
+            }
             File file = new File(uriString);
             path = file.getAbsolutePath();
-            String displayName = null;
+            String displayName = "";
 
             if (uriString.startsWith("content://")) {
-                Cursor cursor = null;
-                try {
-                    cursor = NewCandidateActivity.this.getContentResolver()
-                            .query(resumeUri,
-                                    null, null, null, null);
+                try (Cursor cursor = NewCandidateActivity.this.getContentResolver()
+                        .query(resumeUri,
+                                null, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst())
                         displayName = "Selected pdf file is: " + cursor
                                 .getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                } finally {
-                    cursor.close();
                 }
             } else if (uriString.startsWith("file://")) {
                 displayName = "Selected pdf file is: " + file.getName();

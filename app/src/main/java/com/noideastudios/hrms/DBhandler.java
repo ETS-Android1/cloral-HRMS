@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -140,14 +139,14 @@ public class DBhandler extends SQLiteOpenHelper {
         return candidateArrayList;
     }
 
-    public void updateCandidate(int id, String name, String phone, String position, String status, Uri uri) {
+    public void updateCandidate(int id, String name, String phone, String position, String status, String photoURI) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = "UPDATE " + TABLE_CANDIDATES + " SET "
                 + COLUMN_NAME + " = '" + name + "', "
                 + COLUMN_PHONE + " = '" + phone + "', "
                 + COLUMN_POSITION + " = '" + position + "', "
                 + COLUMN_STATUS + " = '" + status + "', "
-                + COLUMN_PHOTO + " = '" + uri + "'"
+                + COLUMN_PHOTO + " = '" + photoURI + "'"
                 + " WHERE " + COLUMN_ID + " = " + id;
         sqLiteDatabase.execSQL(query);
     }
@@ -155,5 +154,12 @@ public class DBhandler extends SQLiteOpenHelper {
     public void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.delete(TABLE_CANDIDATES, null, null);
+    }
+
+    public void deleteSelected() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_CANDIDATES + " WHERE "
+                + COLUMN_STATUS + " = 'Selected' ;";
+        sqLiteDatabase.execSQL(query);
     }
 }

@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -25,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private CardView yellow, red, blue;
+    DBhandler dBhandler;
 
     public HomeActivity()
     {
@@ -37,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        dBhandler = new DBhandler(this, null, null, 1);
         login();
         setUpButtons();
     }
@@ -56,8 +60,14 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_logout) {
+            AuthUI.getInstance().signOut(HomeActivity.this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            dBhandler.deleteAll();
+                        }
+                    });
         }
 
         return super.onOptionsItemSelected(item);

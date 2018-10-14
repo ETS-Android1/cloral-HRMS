@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">HRMS</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
 
     <string name="save_details">Save Details</string>
     <string name="reset">Reset</string>
@@ -19,8 +19,9 @@
     <string name="enter_candidate_phone_number">Enter Candidate Phone Number</string>
     <string name="enter_preferable_position">Enter Preferable Position</string>
     <string name="choose_status">Choose Status:</string>
-    <string name="upload_resume">Click here to upload resume...</string>
-    <string name="no_resume_uploaded">No Resume Uploaded</string>
+    <string name="upload_resume">Click here to upload resume…</string>
+    <string name="view">View</string>
+    <string name="upload">Upload</string>
 
     <string-array name="statusSpinnner">
         <item>Selected</item>
