@@ -36,7 +36,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
     CircleImageView imageView;
     TextView Name, Phone, Position, Resume, Change;
     Spinner Status;
-    String name, phone, position, status, P_uri, R_uri;
+    String name, phone, position, status, R_uri;
     Uri photoURI, resumeUri;
 
     @Override
@@ -92,10 +92,13 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         Name.setText(candidate.getName());
         Phone.setText(candidate.getPhone());
         Position.setText(candidate.getPosition());
-        Picasso.with(this)
-                .load(candidate.getPhotoURI())
-                .error(R.drawable.employee_tie)
-                .into(imageView);
+        if (candidate.getPhotoURI().length() > 0) {
+            Picasso.with(this)
+                    .load(candidate.getPhotoURI())
+                    .error(R.drawable.employee_tie)
+                    .into(imageView);
+            photoURI = Uri.parse(candidate.getPhotoURI());
+        }
         if (candidate.getResumeURI().length() > 0) {
             Resume.setEnabled(true);
             Resume.setText("View");
