@@ -1,9 +1,13 @@
 package com.noideastudios.hrms;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -17,12 +21,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,18 +141,45 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
                             if (!dataSnapshot.hasChild(key)) {
                                 key_proceed.setClickable(true);
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(AllApplicationsActivity.this, "Key does not exist!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(AllApplicationsActivity.this,
+                                        "Key does not exist!", Toast.LENGTH_LONG).show();
                             } else {
                                 if (childEventListener == null) {
                                     childEventListener = new ChildEventListener() {
+                                        private static final String TAG = "Upload error";
+                                        StorageReference images;
+
                                         @Override
                                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                            Candidate candidate = dataSnapshot.getValue(Candidate.class);
-                                            dBhandler.addCandidate(candidate);
+                                            final Candidate candidate = dataSnapshot.getValue(Candidate.class);
+
+                                            images = FirebaseStorage.getInstance()
+                                                    .getReferenceFromUrl("gs://hrms-a25d0.appspot.com/Images/" + key + "/" + candidate.getPhotoURI());
+                                            final long ONE_MEGABYTE = 1024 * 1024;
+
+                                            //download file as a byte array
+                                            if (candidate.getPhotoURI().equals("null"))
+                                                dBhandler.addCandidate(candidate);
+                                            else {
+                                                images.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                        candidate.setPhotoURI(String.valueOf(Functions
+                                                                .BitmapToUri(AllApplicationsActivity.this, bitmap)));
+                                                        Toast.makeText(AllApplicationsActivity.this, "Retrieval successful!", Toast.LENGTH_LONG).show();
+                                                        dBhandler.addCandidate(candidate);
+                                                        getValues();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(AllApplicationsActivity.this, "Retrieval failed!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            }
                                             dialog.dismiss();
-                                            getValues();
                                             progressBar.setVisibility(View.GONE);
-                                            Toast.makeText(AllApplicationsActivity.this, "Retrieval Successful!", Toast.LENGTH_LONG).show();
                                         }
 
                                         @Override
@@ -177,7 +212,8 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
                 } else {
                     progressBar.setVisibility(View.GONE);
                     key_proceed.setClickable(true);
-                    Toast.makeText(AllApplicationsActivity.this, "Key cannot be empty!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AllApplicationsActivity.this,
+                            "Key cannot be empty!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -191,7 +227,8 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
         builder.setView(pushDialog);
 
         final AlertDialog dialog = builder.create();
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow())
+                .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         progressBar = pushDialog.findViewById(R.id.progress);
@@ -211,17 +248,29 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
                     if (childEventListener != null)
                         databaseReference.removeEventListener(childEventListener);
 
+                    StorageReference storageReference;
+
                     Map<String, Candidate> sample = new HashMap<>();
                     for (Candidate entry : arrayList) {
+                        if (!entry.getPhotoURI().equals("null")) {
+                            storageReference = FirebaseStorage.
+                                    getInstance().getReference()
+                                    .child("Images/" + key + "/" + entry.getId());
+                            storageReference.putFile(Uri.parse(entry.getPhotoURI()));
+                            entry.setPhotoURI(String.valueOf(entry.getId()));
+                        }
                         sample.put(String.valueOf(entry.getId()), entry);
                     }
                     databaseReference.setValue(sample);
-                    Toast.makeText(AllApplicationsActivity.this, "Push successful!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AllApplicationsActivity.this,
+                            "Push successful!", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
+                    getValues();
                 } else {
                     progressBar.setVisibility(View.GONE);
                     key_proceed.setClickable(true);
-                    Toast.makeText(AllApplicationsActivity.this, "Key cannot be empty!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AllApplicationsActivity.this,
+                            "Key cannot be empty!", Toast.LENGTH_LONG).show();
                 }
             }
         });
