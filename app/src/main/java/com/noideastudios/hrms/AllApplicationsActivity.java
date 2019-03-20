@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -50,6 +51,7 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
     DatabaseReference databaseReference;
     ChildEventListener childEventListener;
     ProgressBar progressBar;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,9 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
                 retrieveFromRD();
             }
         });
+
+        searchView = findViewById(R.id.search);
+        onSearch();
     }
 
     private void getValues() {
@@ -248,16 +253,24 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
                     if (childEventListener != null)
                         databaseReference.removeEventListener(childEventListener);
 
-                    StorageReference storageReference;
+                    StorageReference imageReference;
+                    StorageReference resumeReference;
 
                     Map<String, Candidate> sample = new HashMap<>();
                     for (Candidate entry : arrayList) {
                         if (!entry.getPhotoURI().equals("null")) {
-                            storageReference = FirebaseStorage.
+                            imageReference = FirebaseStorage.
                                     getInstance().getReference()
                                     .child("Images/" + key + "/" + entry.getId());
-                            storageReference.putFile(Uri.parse(entry.getPhotoURI()));
+                            imageReference.putFile(Uri.parse(entry.getPhotoURI()));
                             entry.setPhotoURI(String.valueOf(entry.getId()));
+                        }
+                        if (!entry.getResumeURI().equals("null")) {
+                            resumeReference = FirebaseStorage.
+                                    getInstance().getReference()
+                                    .child("Resume/" + key + "/" + entry.getId());
+                            resumeReference.putFile(Uri.parse(entry.getResumeURI()));
+                            entry.setResumeURI(String.valueOf(entry.getId()));
                         }
                         sample.put(String.valueOf(entry.getId()), entry);
                     }
@@ -340,5 +353,33 @@ public class AllApplicationsActivity extends AppCompatActivity implements Adapte
     protected void onResume() {
         super.onResume();
         setUpView();
+    }
+
+    protected void onSearch() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                arrayList = dBhandler.returnQuery(query.toLowerCase());
+                if (!arrayList.isEmpty()) {
+                    candidateAdapter = new CandidateAdapter(
+                            AllApplicationsActivity.this, R.layout.candidate_tile, arrayList);
+                    oldListView.setAdapter(candidateAdapter);
+                } else
+                    Toast.makeText(AllApplicationsActivity.this, "That name does not exist!", Toast.LENGTH_LONG).show();
+                return arrayList != null;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                arrayList = dBhandler.returnQuery(query.toLowerCase());
+                if (!arrayList.isEmpty()) {
+                    candidateAdapter = new CandidateAdapter(
+                            AllApplicationsActivity.this, R.layout.candidate_tile, arrayList);
+                    oldListView.setAdapter(candidateAdapter);
+                } else
+                    Toast.makeText(AllApplicationsActivity.this, "That name does not exist!", Toast.LENGTH_LONG).show();
+                return arrayList != null;
+            }
+        });
     }
 }

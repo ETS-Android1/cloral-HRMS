@@ -45,7 +45,7 @@ public class DBhandler extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void addCandidate(Candidate candidate) {
+    void addCandidate(Candidate candidate) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, candidate.getName());
@@ -58,7 +58,7 @@ public class DBhandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public Candidate returnCandidate(int employee_id) {
+    Candidate returnCandidate(int employee_id) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_CANDIDATES
                 + " WHERE " + COLUMN_ID + " = " + employee_id;
@@ -78,7 +78,7 @@ public class DBhandler extends SQLiteOpenHelper {
         return candidate;
     }
 
-    public ArrayList<Candidate> returnCandidates(int number) {
+    ArrayList<Candidate> returnCandidates(int number) {
 
         String query = "";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
@@ -139,7 +139,7 @@ public class DBhandler extends SQLiteOpenHelper {
         return candidateArrayList;
     }
 
-    public void updateCandidate(int id, String name, String phone, String position, String status, String photoURI, String resumeUri) {
+    void updateCandidate(int id, String name, String phone, String position, String status, String photoURI, String resumeUri) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = "UPDATE " + TABLE_CANDIDATES + " SET "
                 + COLUMN_NAME + " = '" + name + "', "
@@ -152,15 +152,44 @@ public class DBhandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(query);
     }
 
-    public void deleteAll() {
+    void deleteAll() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.delete(TABLE_CANDIDATES, null, null);
     }
 
-    public void deleteSelected() {
+    void deleteSelected() {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         String query = "DELETE FROM " + TABLE_CANDIDATES + " WHERE "
                 + COLUMN_STATUS + " = 'Selected' ;";
         sqLiteDatabase.execSQL(query);
+    }
+
+    ArrayList<Candidate> returnQuery(String search) {
+        String query = "SELECT * FROM " + TABLE_CANDIDATES
+                + " WHERE " + COLUMN_NAME + " LIKE '%" + search.toLowerCase() + "%';";
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        ArrayList<Candidate> candidateArrayList = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Candidate candidate = new Candidate();
+                candidate.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                candidate.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+                candidate.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE)));
+                candidate.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                candidate.setPosition(cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)));
+                candidate.setPhotoURI(cursor.getString(cursor.getColumnIndex(COLUMN_PHOTO)));
+                candidate.setResumeURI(cursor.getString(cursor.getColumnIndex(COLUMN_RESUME)));
+                candidateArrayList.add(candidate);
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+
+        sqLiteDatabase.close();
+        return candidateArrayList;
     }
 }
